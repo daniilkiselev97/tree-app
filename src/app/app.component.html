@@ -16,44 +16,30 @@
 	</ng-container> -->
 
 
-<!-- <div *ngIf="data.length === 0">Нет данных для отображения</div>
+	<div *ngIf="!data.length">Нет данных для отображения</div>
 
-	<ng-container *ngIf="data.length > 0">
-		<ng-container *ngFor="let node of data; trackBy: trackById">
-			<ng-container *ngTemplateOutlet="renderNode; context: { $implicit: node }"></ng-container>
-		</ng-container>
-	</ng-container>
-	
-	<ng-template #renderNode let-node>
-		<tui-tree-item>
-			{{ node.name }}
-			<ng-container *ngIf="node.children && node.children.length > 0">
-				<ng-container *ngFor="let child of node.children; trackBy: trackById">
-					<ng-container *ngTemplateOutlet="renderNode; context: { $implicit: child }"></ng-container>
-				</ng-container>
+	<ng-container *ngIf="data.length">
+		<ng-container [tuiTreeController]="true">
+			<ng-container *ngFor="let node of data; trackBy: trackById">
+				<ng-container *ngTemplateOutlet="renderNode; context: { $implicit: node }"></ng-container>
 			</ng-container>
-		</tui-tree-item>
-	</ng-template>  -->
-
-
-	<div *ngIf="data.length === 0">Нет данных для отображения</div>
-
-	<ng-container *ngIf="data.length > 0">
-		<ng-container *ngFor="let node of data; trackBy: trackById">
-			<ng-container *ngTemplateOutlet="renderNode; context: { $implicit: node }"></ng-container>
 		</ng-container>
 	</ng-container>
 	
 	<ng-template #renderNode let-node>
 		<tui-tree-item>
 			{{ node.name }}
-			<ng-container *ngIf="node.children && node.children.length > 0">
+			<ng-container *ngIf="node.children.length">
 				<ng-container *ngFor="let child of node.children; trackBy: trackById">
 					<ng-container *ngTemplateOutlet="renderNode; context: { $implicit: child }"></ng-container>
 				</ng-container>
 			</ng-container>
 		</tui-tree-item>
 	</ng-template>
+
+
+
+
 
 
 
