@@ -8,6 +8,9 @@ import { AppComponent } from './app.component';
 import {TuiTreeModule} from '@taiga-ui/kit';
 import { HttpClientModule } from '@angular/common/http';
 
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {TuiCheckboxLabeledModule} from '@taiga-ui/kit';
+import {TuiMapperPipeModule} from '@taiga-ui/cdk';
 
 
 @NgModule({
@@ -21,7 +24,11 @@ import { HttpClientModule } from '@angular/common/http';
       TuiDialogModule,
       TuiAlertModule,
 			TuiTreeModule,
-			HttpClientModule
+			HttpClientModule,
+			FormsModule,
+			ReactiveFormsModule,
+			TuiCheckboxLabeledModule,
+			TuiMapperPipeModule
 ],
   providers: [{provide: TUI_SANITIZER, useClass: NgDompurifySanitizer}],
   bootstrap: [AppComponent]
