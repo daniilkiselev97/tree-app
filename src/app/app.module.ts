@@ -5,12 +5,13 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
-import {TuiTreeModule} from '@taiga-ui/kit';
 import { HttpClientModule } from '@angular/common/http';
 
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {TuiCheckboxLabeledModule} from '@taiga-ui/kit';
+import {TuiCheckboxLabeledModule, TuiInputModule, TuiTreeModule} from '@taiga-ui/kit';
 import {TuiMapperPipeModule} from '@taiga-ui/cdk';
+
+
 
 
 @NgModule({
@@ -28,7 +29,8 @@ import {TuiMapperPipeModule} from '@taiga-ui/cdk';
 			FormsModule,
 			ReactiveFormsModule,
 			TuiCheckboxLabeledModule,
-			TuiMapperPipeModule
+			TuiMapperPipeModule,
+			TuiInputModule,
 ],
   providers: [{provide: TUI_SANITIZER, useClass: NgDompurifySanitizer}],
   bootstrap: [AppComponent]

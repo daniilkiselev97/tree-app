@@ -1,6 +1,23 @@
-<ng-container *ngIf="data$ | async as data">
+<form class="b-form" [formGroup]="searchForm">
+	<p>
+			<tui-input
+					formControlName="formValue"
+					tuiTextfieldCleaner="true"
+					tuiTextfieldLabelOutside="true"
+			>
+					Search text
+					<input
+							autocomplete="text"
+							tuiTextfield
+							type="text"
+					/>
+			</tui-input>
+	</p>
+</form>
+
+<ng-container *ngIf="filteredData$ | async as data">
 	<tui-tree
-			*ngFor="let item of data.children"
+			*ngFor="let item of data"
 			[childrenHandler]="handler"
 			[content]="content"
 			[tuiTreeController]="true"
@@ -8,23 +25,12 @@
 	></tui-tree>
 </ng-container>
 
-<ng-template
-    #content
-    let-item
->
-    <tui-checkbox-labeled
-        class="tui-space_vertical-2 tui-space_left-1"
-        [ngModel]="item | tuiMapper: getValue : map"
-        (ngModelChange)="onChecked(item, $event)"
-    >
-        {{ item.name }}
-    </tui-checkbox-labeled>
+<ng-template #content let-item>
+	<tui-checkbox-labeled
+			class="tui-space_vertical-2 tui-space_left-1"
+			[ngModel]="item | tuiMapper: getValue : map"
+			(ngModelChange)="onChecked(item, $event)"
+	>
+			<span [innerHTML]="highlightSearchTerm(item.name, searchForm.get('formValue')!.value || '')"></span>
+	</tui-checkbox-labeled>
 </ng-template>
-
-
-
-
-
-
-
-
