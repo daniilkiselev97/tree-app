@@ -80,54 +80,31 @@ export class AppComponent {
             return nodes.map(node => ({ ...node, expanded: false, highlight: false }));
         }
 
-        const result: TreeNode[] = [];
-        const stack = [...nodes];
-
-        while (stack.length) {
-            const node = stack.pop();
-            if (node) {
-                const markedNode = this.markAndFilterNode(node, searchTerm);
-                if (markedNode.highlight || (markedNode.children && markedNode.children.length > 0)) {
-                    result.push(markedNode);
-                }
-            }
-        }
+        const result: TreeNode[] = nodes
+            .map(node => this.markAndFilterNode(node, searchTerm))
+            .filter(node => node.highlight || (node.children && node.children.length > 0));
 
         return result;
     }
 
-		private markAndFilterNode(node: TreeNode, searchTerm: string): TreeNode {
-			const lowerSearchTerm = searchTerm.toLowerCase();
-			const stack = [node];
-			const markedChildren: TreeNode[] = [];
-	
-			while (stack.length) {
-					const currentNode = stack.pop();
-					if (currentNode && typeof currentNode === 'object' && !markedChildren.includes(currentNode)) {
-							const highlight = currentNode.name.toLowerCase().includes(lowerSearchTerm);
-	
-							const childrenStack = (currentNode.children || [])
-									.map(child => this.markAndFilterNode(child, searchTerm))
-									.filter(child => child.highlight || child.children?.length);
-	
-							if (highlight || childrenStack.length > 0) {
-									markedChildren.push({
-											...currentNode,
-											children: childrenStack,
-											highlight,
-											expanded: highlight || childrenStack.length > 0,
-									});
-							}
-					}
-			}
-	
-			const highlighted = node.name.toLowerCase().includes(lowerSearchTerm);
-			const expanded = highlighted || markedChildren.length > 0;
-	
-			return { ...node, children: markedChildren, highlight: highlighted, expanded };
-	}
-	
-	
+    private markAndFilterNode(node: TreeNode, searchTerm: string): TreeNode {
+        const lowerSearchTerm = searchTerm.toLowerCase();
+        const highlight = node.name.toLowerCase().includes(lowerSearchTerm);
+
+        let children: TreeNode[] = [];
+        if (node.children) {
+            children = node.children
+                .map(child => this.markAndFilterNode(child, searchTerm))
+                .filter(child => child.highlight || (child.children && child.children.length > 0));
+        }
+
+        return {
+            ...node,
+            children: children.length > 0 ? children : undefined,
+            highlight,
+            expanded: highlight || children.length > 0
+        };
+    }
 
     highlightSearchTerm(name: string, searchTerm: string): string {
         if (!searchTerm) {
