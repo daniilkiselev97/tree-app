@@ -13,6 +13,7 @@ import { RecursiveComponent } from './recursive/recursive.component';
 import { StackComponent } from './stack/stack.component';
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
+import { HighlightDirective } from './highlight.directive';
 
 
 
@@ -22,6 +23,7 @@ import { AppComponent } from "./app.component";
     AppComponent,
     RecursiveComponent,
     StackComponent,
+    HighlightDirective,
   ],
   imports: [
     	BrowserModule,
