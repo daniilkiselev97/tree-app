@@ -88,23 +88,31 @@ export class StackComponent {
     }
 
     private markAndFilterNode(node: TreeNode, searchTerm: string): TreeNode {
-        const lowerSearchTerm = searchTerm.toLowerCase();
-        const highlight = node.name.toLowerCase().includes(lowerSearchTerm);
-
-        let children: TreeNode[] = [];
-        if (node.children) {
-            children = node.children
-                .map(child => this.markAndFilterNode(child, searchTerm))
-                .filter(child => child.highlight || (child.children && child.children.length > 0));
-        }
-
-        return {
-            ...node,
-            children: children.length > 0 ? children : undefined,
-            highlight,
-            expanded: highlight || children.length > 0
-        };
-    }
+			const lowerSearchTerm = searchTerm.toLowerCase();
+			const stack: TreeNode[] = [node];
+			const result: TreeNode[] = [];
+	
+			while (stack.length) {
+					const currentNode = stack.pop()!;
+					const highlight = currentNode.name.toLowerCase().includes(lowerSearchTerm);
+	
+					let children: TreeNode[] = [];
+					if (currentNode.children) {
+							children = currentNode.children.filter(child => child.name.toLowerCase().includes(lowerSearchTerm));
+							children.forEach(child => stack.push(child));
+					}
+	
+					result.push({
+							...currentNode,
+							children: children.length > 0 ? children : undefined,
+							highlight,
+							expanded: highlight || children.length > 0
+					});
+			}
+	
+			return result[0];
+	}
+	
 
     highlightSearchTerm(name: string, searchTerm: string): string {
         if (!searchTerm) {
