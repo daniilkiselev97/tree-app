@@ -1,6 +1,5 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { JsonDataService } from './json-data.service';
-
 import { EMPTY_ARRAY, TuiHandler } from '@taiga-ui/cdk';
 import { Observable, combineLatest } from 'rxjs';
 import { FormControl, FormGroup } from '@angular/forms';
@@ -11,6 +10,7 @@ interface TreeNode {
     readonly children?: readonly TreeNode[];
     readonly name: string;
     highlight?: boolean;
+    expanded?: boolean;
 }
 
 function flatten(item: TreeNode): readonly TreeNode[] {
@@ -23,7 +23,7 @@ function flatten(item: TreeNode): readonly TreeNode[] {
     selector: 'app-root',
     templateUrl: './app.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    styleUrls: ['./app.component.css']
+    styleUrls: ['./app.component.less']
 })
 export class AppComponent {
     constructor(
@@ -42,7 +42,7 @@ export class AppComponent {
         this.data$,
         this.searchForm.get('formValue')!.valueChanges.pipe(startWith(''))
     ]).pipe(
-        map(([data, searchTerm]) => this.markTreeNodes(data, searchTerm ?? ''))
+        map(([data, searchTerm]) => this.markAndFilterTreeNodes(data, searchTerm ?? ''))
     );
 
     readonly handler: TuiHandler<TreeNode, readonly TreeNode[]> = item =>
@@ -66,18 +66,30 @@ export class AppComponent {
         this.map = new Map(this.map.entries());
     }
 
-    private markTreeNodes(nodes: TreeNode[], searchTerm: string): TreeNode[] {
-        return nodes.map(node => this.markNode(node, searchTerm));
+    private markAndFilterTreeNodes(nodes: TreeNode[], searchTerm: string): TreeNode[] {
+        if (!searchTerm) {
+            return nodes.map(node => ({ ...node, expanded: false, highlight: false }));
+        }
+
+       return  nodes
+            .map(node => this.markAndFilterNode(node, searchTerm))
+            .filter(node => node.highlight || (node.children && node.children.length > 0));
+
+   
     }
 
-    private markNode(node: TreeNode, searchTerm: string): TreeNode {
+    private markAndFilterNode(node: TreeNode, searchTerm: string): TreeNode {
         const lowerSearchTerm = searchTerm.toLowerCase();
         const highlight = node.name.toLowerCase().includes(lowerSearchTerm);
 
-        const markedChildren = (node.children || []).map(child => this.markNode(child, searchTerm));
+        const markedChildren = (node.children || [])
+            .map(child => this.markAndFilterNode(child, searchTerm))
+            .filter(child => child.highlight || child.children?.length);
 
-        return { ...node, children: markedChildren, highlight };
-    }
+        const expanded = highlight || markedChildren.length > 0;
+
+        return { ...node, children: markedChildren, highlight, expanded: expanded ?? false }; 
+   }
 
     highlightSearchTerm(name: string, searchTerm: string): string {
         if (!searchTerm) {
@@ -87,3 +99,6 @@ export class AppComponent {
         return name.replace(regex, '<span class="highlight">$1</span>');
     }
 }
+
+
+
