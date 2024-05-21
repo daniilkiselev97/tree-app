@@ -32,6 +32,8 @@
 		[ngModel]="item | tuiMapper: getValue : map"
 		(ngModelChange)="onChecked(item, $event)"
 	>
-		<span [innerHTML]="highlightSearchTerm(item.name, searchForm.get('formValue')!.value || '')"></span>
+		<!-- <span [innerHTML]="highlightSearchTerm(item.name, searchForm.get('formValue')!.value || '')"></span> -->
+		<span [highlight]="searchForm.get('formValue')!.value || ''">{{ item.name }}</span>
+
 	</tui-checkbox-labeled>
 </ng-template>
